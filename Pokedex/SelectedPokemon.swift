@@ -70,7 +70,31 @@ class SelectedPokemon: ObservableObject {
     
     
     func flavorText() -> String {
-        return currentPokemonFlavorText.flavor_text_entries.filter({$0.language.name == "en"}).last?.flavor_text ?? ""
+        return currentPokemonFlavorText.flavor_text_entries.filter( {
+            $0.language.name == "en"
+            &&
+            (
+                $0.version.name != "red" &&
+                $0.version.name != "blue" &&
+                $0.version.name != "yellow" &&
+                $0.version.name != "gold" &&
+                $0.version.name != "silver" &&
+                $0.version.name != "crystal" &&
+                $0.version.name != "ruby" &&
+                $0.version.name != "sapphire" &&
+                $0.version.name != "emerald" &&
+                $0.version.name != "firered" &&
+                $0.version.name != "leafgreen" &&
+                $0.version.name != "diamond" &&
+                $0.version.name != "pearl" &&
+                $0.version.name != "platinum" &&
+                $0.version.name != "heartgold" &&
+                $0.version.name != "soulsilver" &&
+                $0.version.name != "colosseum" &&
+                $0.version.name != "xd" &&
+                $0.version.name != "legends-arceus"
+            )
+        } ).first?.flavor_text ?? ""
     }
     
     @ViewBuilder

@@ -11,7 +11,27 @@ class SelectedPokemon: ObservableObject {
     typealias FlavorText = PokeData.PokedexFlavorText
     
     @Published private(set) var currentPokemonFlavorText: FlavorText = FlavorText(flavor_text_entries: [])
+    @Published private(set) var currentPokemonStats =
+    [
+        "hp": 0,
+        "attack": 0,
+        "defense": 0,
+        "special-attack": 0,
+        "special-defense": 0,
+        "speed": 0
+    ]
+    @Published private(set) var currentPokemonBaseStatTotal = 0
     @Published private(set) var currentPokemonTypes: [String] = []
+    
+    private let statShorthandNames =
+    [
+        "hp": "HP",
+        "attack": "Atk",
+        "defense": "Def",
+        "special-attack": "SpA",
+        "special-defense": "SpD",
+        "speed": "Spe"
+    ]
     
     // MARK: - Intent(s):
     
@@ -39,7 +59,8 @@ class SelectedPokemon: ObservableObject {
         task.resume()
     }
     
-    func fetchCurrentPokemonTypes(entryNum: Int) {
+    func fetchCurrentPokemon(entryNum: Int) {
+        self.currentPokemonStats = [:]
         self.currentPokemonTypes = []
         
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(entryNum)/") else {
@@ -60,6 +81,11 @@ class SelectedPokemon: ObservableObject {
                         types.append("\(pokemon.types[1].type.name)")
                     }
                     self.currentPokemonTypes = types
+                    
+                    pokemon.stats.forEach { stat in
+                        self.currentPokemonStats[stat.stat.name] = stat.base_stat
+                        self.currentPokemonBaseStatTotal += stat.base_stat
+                    }
                 }
             } catch {
                 print(error)
@@ -118,6 +144,62 @@ class SelectedPokemon: ObservableObject {
                 }
             }
         }
+    }
+    
+    @ViewBuilder
+    func displayPokemonStats() -> some View {
+        VStack {
+            HStack {
+                Spacer()
+                Text("Base Stat Total: \(currentPokemonBaseStatTotal)")
+                Spacer()
+            }
+            Divider()
+            displayPokemonStat(statName: "hp")
+            displayPokemonStat(statName: "attack")
+            displayPokemonStat(statName: "defense")
+            displayPokemonStat(statName: "special-attack")
+            displayPokemonStat(statName: "special-defense")
+            displayPokemonStat(statName: "speed")
+        }
+        .padding(.horizontal)
+    }
+    
+    @ViewBuilder
+    func displayPokemonStat(statName: String) -> some View {
+        let currentStat = currentPokemonStats[statName] ?? 0
+        LazyVGrid(
+            columns:
+                [flexibleGridItem(minimum: 0, alignment: .leading),
+                 flexibleGridItem(minimum: 0, alignment: .leading),
+//                 flexibleGridItem(minimum: 0, alignment: .trailing),
+                 flexibleGridItem(minimum: 0, alignment: .trailing)
+                ])
+        {
+            Text(statShorthandNames[statName] ?? statName)
+            statBar(for: currentStat)
+//            Spacer()
+            Text("\(currentStat)")
+        }
+    }
+    
+    func flexibleGridItem(minimum: CGFloat, alignment: Alignment) -> GridItem {
+        var gridItem = GridItem(.flexible(minimum: minimum))
+        gridItem.spacing = 0
+        gridItem.alignment = alignment
+        return gridItem
+    }
+    
+    @ViewBuilder
+    func statBar(for currentStat: Int) -> some View {
+        GeometryReader { geometry in
+            RoundedRectangle(cornerRadius: 2)
+                .frame(width: self.statBarWidth(stat: currentStat, size: geometry.size))
+        }
+    }
+    
+    func statBarWidth(stat: Int, size: CGSize) -> CGFloat {
+        CGFloat(stat) / 255 * size.width
     }
     
     func pokemonTypeBackgroundColors() -> LinearGradient {

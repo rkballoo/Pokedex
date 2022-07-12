@@ -44,12 +44,15 @@ class PokedexList: ObservableObject {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 80, height: 80)
-            } else if asyncImage.error != nil {
-                Text("Error loading")
-                    .font(.footnote)
-                    .frame(width: 80, height: 80)
+                // Error is not being handled so this is removed for now
+                // Images can attempt reloading when scrolling in and out of view
+//            } else if asyncImage.error != nil {
+//                Text("Error loading")
+//                    .font(.footnote)
+//                    .frame(width: 80, height: 80)
             } else {
-                Color.clear
+                ProgressView()
+//                Color.clear
                     .frame(width: 80, height: 80)
             }
         }

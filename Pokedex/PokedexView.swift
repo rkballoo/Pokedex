@@ -24,8 +24,7 @@ struct PokedexView: View {
                         } label: {
                             displayPokemonEntry(
                                 entryNum: pokedexEntry.entry_number,
-                                name: pokedexEntry.pokemon_species.name,
-                                colors: [Color("pokedexEntryColor").opacity(0.5), .clear])
+                                name: pokedexEntry.pokemon_species.name)
                             .padding(.horizontal)
                         }
                         .foregroundColor(Color("pokedexEntryColor"))
@@ -59,7 +58,7 @@ struct PokedexView: View {
     }
     
     @ViewBuilder
-    func displayPokemonEntry(entryNum: Int, name: String, colors: [Color]) -> some View {
+    func displayPokemonEntry(entryNum: Int, name: String) -> some View {
         ZStack(alignment: .leading) {
             RoundedRectangle(cornerRadius: 15)
                 .foregroundColor(Color("pokedexEntryColor").opacity(0.15))

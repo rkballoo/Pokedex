@@ -35,7 +35,14 @@ struct PokeData {
     }
     
     struct Pokemon: Codable {
+        let stats: [PokeStat]
         let types: [PokemonType]
+    }
+    
+    struct PokeStat: Codable {
+        let base_stat: Int
+        let effort: Int
+        let stat: Link
     }
     
     struct PokemonType: Codable {

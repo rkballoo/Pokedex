@@ -31,20 +31,45 @@ struct SelectedPokemonView: View {
                 }
                 .onAppear {
                     selectedPokemon.fetchCurrentPokemonFlavorText(url: url)
-                    selectedPokemon.fetchCurrentPokemonTypes(entryNum: entryNum)
+                    selectedPokemon.fetchCurrentPokemon(entryNum: entryNum)
                 }
                 selectedPokemon.displayPokemonTypes()
                 flavorText
+                    .padding()
+                pokemonStats
+                    .padding()
             }
         }
         .background(selectedPokemon.pokemonTypeBackgroundColors())
     }
     
     var flavorText: some View {
-        VStack {
-            Text("Pokedex Entry")
-                .font(.title2)
-            Text(selectedPokemon.flavorText())
+        ZStack {
+            RoundedRectangle(cornerRadius: 15)
+                .foregroundColor(Color("pokedexEntryColor").opacity(0.15))
+            VStack {
+                Spacer()
+                Text("Pokedex Entry")
+                    .font(.title2)
+                Divider()
+                Text(selectedPokemon.flavorText())
+                Spacer()
+            }
+        }
+    }
+    
+    var pokemonStats: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 15)
+                .foregroundColor(Color("pokedexEntryColor").opacity(0.15))
+            VStack {
+                Spacer()
+                Text("Pokedex Stats")
+                    .font(.title2)
+                Divider()
+                selectedPokemon.displayPokemonStats()
+                Spacer()
+            }
         }
     }
 }

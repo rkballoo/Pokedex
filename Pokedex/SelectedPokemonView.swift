@@ -53,6 +53,7 @@ struct SelectedPokemonView: View {
                     .font(.title2)
                 Divider()
                 Text(selectedPokemon.flavorText())
+                    .padding(.horizontal)
                 Spacer()
             }
         }
